@@ -2,6 +2,9 @@ import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response, status
 import redis.asyncio as redis
+import os
+
+REDIS_HOST=os.getenv("REDIS_HOST", "localhost")
 
 redis_client: redis.Redis=None
 lua_sha: str=None
@@ -14,7 +17,7 @@ async def lifespan(app: FastAPI):
     global redis_client, lua_sha
 
     redis_client=redis.Redis(
-        host='localhost', port=6379, db=0, decode_responses=True
+        host=REDIS_HOST, port=6379, db=0, decode_responses=True
     )
 
     with open("ratelimit.lua", "r") as f:
@@ -51,7 +54,7 @@ async def limited_endpoint(request:Request, response:Response):
         return {
             "error": "Too many requests",
             "message": "Rate limit exceeded, please try again later",
-            "remaining tokens": remaining_tokens,
+            "remaining_tokens": remaining_tokens,
         }
 
     return {
