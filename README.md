@@ -37,6 +37,7 @@ When an HTTP request hits the gateway, client identification, token calculation,
              │   OR                          │
              │ 429 Too Many Requests         │
              └───────────────────────────────┘
+```
 
 Prerequisites and how to run:
 
